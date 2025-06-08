@@ -55,11 +55,14 @@ const currentPosts = sortedPosts.slice(0, config.settings.pagination);
         </div>
 
         <!-- sidebar -->
-        <PostSidebar
-          categories={categories}
-          tags={tags}
-          allCategories={allCategories}
-        />
+        { posts.length > 0 && (
+            <PostSidebar
+              categories={categories}
+              tags={tags}
+              allCategories={allCategories}
+            />
+          )
+        }
       </div>
     </div>
   </section>
