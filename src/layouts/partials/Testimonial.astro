@@ -5,7 +5,7 @@ const { testimonial } = Astro.props;
 ---
 
 {
-  testimonial.data.enable && (
+  testimonial && testimonial.data.enable && (
     <section class="section">
       <div class="container">
         <div class="row">
