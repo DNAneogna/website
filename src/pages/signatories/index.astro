@@ -1,0 +1,25 @@
+---
+import SigList from "@/components/SigList.jsx";
+import Base from "@/layouts/Base.astro";
+import { getSinglePage } from "@/lib/contentParser.astro";
+import PageHeader from "@/partials/PageHeader.astro";
+import { getCollection, getEntry, type CollectionEntry } from "astro:content";
+
+const COLLECTION_FOLDER = "signatories";
+
+const title = "Υπογράφοντες";
+const sigs = await getCollection(COLLECTION_FOLDER);
+const label = `${sigs.length} signatures`;
+---
+
+<Base title={title}>
+  <PageHeader title={title} />
+  <section class="section-sm pb-0">
+    <div class="container">
+      <div class="row justify-center">
+        <span class="notice text-center col-6 lg:col-2 py-1">{label}</span>
+      </div>
+      <SigList sigs={sigs} client:load />
+    </div>
+  </section>
+</Base>

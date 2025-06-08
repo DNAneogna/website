@@ -1,5 +1,7 @@
 import { glob } from "astro/loaders";
 import { defineCollection, z } from "astro:content";
+import { parse as parseCsv } from "csv-parse/sync";
+import { parse as parseDate } from "date-fns";
 
 // Post collection schema
 const blogCollection = defineCollection({
@@ -38,6 +40,43 @@ const authorsCollection = defineCollection({
       )
       .optional(),
     draft: z.boolean().optional(),
+  }),
+});
+
+// Signaotories collection schema
+const sigCollection = defineCollection({
+  loader: async () => {
+    const url = "https://docs.google.com/spreadsheets/d/1ndDgpVKDCRJOiiXqQSPd_L7cr9VE0hg-6B9sVTgRw5Y/export?format=csv";
+    const response = await fetch(url);
+    const data = await response.text();
+    const parsedData = await parseCsv(data, {
+      columns: true,
+      skip_empty_lines: true,
+    });
+    return parsedData.map((record: any) => ({
+      id: `${record["Όνομα"].trim()}_${record["Επώνυμο"].trim()}_${record["Ιδιότητα, φορέας εργασίας"].trim()}`,
+      title: `${record["Όνομα"].trim()} ${record["Επώνυμο"].trim()}`,
+      status: record["Ιδιότητα, φορέας εργασίας"].trim(),
+      date: parseDate(record['Timestamp'], 'dd/MM/yyyy HH:mm:ss', new Date()), //03/06/2025 16:02:28
+    }));
+  },
+  schema: z.object({
+    title: z.string(),
+    status: z.string(),
+    date: z.date(),
+    email: z.string().optional(),
+    image: z.string().optional(),
+    social: z
+      .array(
+        z
+          .object({
+            name: z.string().optional(),
+            icon: z.string().optional(),
+            link: z.string().optional(),
+          })
+          .optional(),
+      )
+      .optional(),
   }),
 });
 
@@ -84,7 +123,7 @@ const homepageCollection = defineCollection({
     banner: z.object({
       title: z.string(),
       content: z.string(),
-      image: z.string(),
+      image: z.string().optional(),
       button: z.object({
         enable: z.boolean(),
         label: z.string(),
@@ -103,7 +142,7 @@ const homepageCollection = defineCollection({
           link: z.string(),
         }),
       }),
-    ),
+    ).optional(),
   }),
 });
 
@@ -153,6 +192,7 @@ export const collections = {
   homepage: homepageCollection,
   blog: blogCollection,
   authors: authorsCollection,
+  signatories: sigCollection,
   pages: pagesCollection,
   about: aboutCollection,
   contact: contactCollection,
