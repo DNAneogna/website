@@ -1,0 +1,19 @@
+---
+import { plainify } from "@/lib/utils/textConverter";
+import dateFormat from "@/lib/utils/dateFormat";
+
+const { data } = Astro.props;
+const { title, status, date } = data.data;
+---
+
+<div class="rounded bg-light p-8 text-center dark:bg-darkmode-light">
+  <h4 class="mb-3">
+    {title}
+  </h4>
+  <p class="mb-4">
+    {status}
+  </p>
+  <p class="text-primary dark:text-darkmode-primary">
+    {date && dateFormat(date, "dd MMM, yyyy @ HH:mm")}
+  </p>
+</div>

@@ -1,5 +1,5 @@
 ---
-import SigList from "@/components/SigList.jsx";
+import SigCard from "@/components/SigCard.astro";
 import Base from "@/layouts/Base.astro";
 import { getSinglePage } from "@/lib/contentParser.astro";
 import PageHeader from "@/partials/PageHeader.astro";
@@ -19,7 +19,15 @@ const label = `${sigs.length} signatures`;
       <div class="row justify-center">
         <span class="notice text-center col-6 lg:col-2 py-1">{label}</span>
       </div>
-      <SigList sigs={sigs} client:load />
+      <div class="row justify-center">
+        {
+          sigs.reverse().map((sig) => (
+            <div class="mb-14 md:col-6 lg:col-4">
+              <SigCard data={sig} />
+            </div>
+          ))
+        }
+      </div>
     </div>
   </section>
 </Base>
